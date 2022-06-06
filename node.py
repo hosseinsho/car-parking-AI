@@ -1,3 +1,7 @@
+INF = 127
+HOR = 0
+VER = 1
+
 
 class Node:
     def __init__(self, w, h, cars):
