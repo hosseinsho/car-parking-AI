@@ -1,49 +1,52 @@
 from queue import PriorityQueue
+from parking_state import ParkingState
 
 INF = 127
 
 
-def h_func(node):
-    ret = 0
-    parking = node.map()
-    car = node.cars[0]
-    for col in range(car['col'] + car['l'], node.w):
-        if parking[car['row']][col] == 1:
-            ret += 1
-    return ret
+def calculate_heuristic_value(state: ParkingState):
+    h_value = 0
+    parking = state.get_state_map()
+    red_car = state.cars[0]
+    for col in range(red_car['col'] + red_car['length'], state.y):
+        if parking[red_car['row']][col] == 1:
+            h_value += 1
+    return h_value
 
 
-def goal_test(node):
-    return h_func(node) == 0
+def a_star_graph(start_state: ParkingState):
+    g_value = {start_state: 0}
+    h_value = {start_state: calculate_heuristic_value(start_state)}
+    f = lambda state: g_value[state] + h_value[state]
 
+    closed_states = set()
+    open_states = PriorityQueue()
+    open_states.put((f(start_state), start_state))
 
-def a_star_graph(start):
-    g = {start: 0}
-    h = {start: h_func(start)}
-    f = lambda node: g[node] + h[node]
+    while not open_states.empty():
+        state = open_states.get()[1]
 
-    closed_set = set()
-    open_set = PriorityQueue()
-    open_set.put((f(start), start))
-
-    while not open_set.empty():
-        u = open_set.get()[1]
-        if u in closed_set:
+        if state in closed_states:
             continue
-        if goal_test(u):
-            return g[u]
 
-        closed_set.add(u)
-        neighbors = u.neighbors()
-        for v in neighbors:
-            if v in closed_set:
+        if calculate_heuristic_value(state) == 0:
+            return g_value[state]
+
+        closed_states.add(state)
+        children = state.find_child_states()
+
+        for child_state in children:
+            if child_state in closed_states:
                 continue
-            if v not in g:
-                h[v] = h_func(v)
-                g[v] = INF
-            new_g = g[u] + 1
-            if new_g < g[v]:
-                g[v] = new_g
-                open_set.put((f(v), v))
+
+            if child_state not in g_value:
+                h_value[child_state] = calculate_heuristic_value(child_state)
+                g_value[child_state] = INF
+
+            new_g = g_value[state] + 1
+
+            if new_g < g_value[child_state]:
+                g_value[child_state] = new_g
+                open_states.put((f(child_state), child_state))
 
     return -1
