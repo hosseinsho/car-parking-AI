@@ -1,6 +1,4 @@
-# from algorithms import calculate_heuristic_value
 
-INF = 127
 HORIZONTAL = 'h'
 VERTICAL = 'v'
 
