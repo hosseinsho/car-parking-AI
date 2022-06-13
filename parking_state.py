@@ -1,3 +1,5 @@
+# from algorithms import calculate_heuristic_value
+
 INF = 127
 HORIZONTAL = 'h'
 VERTICAL = 'v'
@@ -8,8 +10,24 @@ class ParkingState:
         self.x = x
         self.y = y
         self.cars = cars
-        self.g_value = self.h_value = self.f_value = 0
         self._init_hash()
+        self.h_value = 0
+        self.calculate_heuristic()
+        self.g_value = 0
+        self.f_value = self.g_value + self.h_value
+
+    def calculate_heuristic(self):
+        h_val = 0
+        parking = self.get_state_map()
+        red_car = self.cars[0]
+        for col in range(red_car['col'] + red_car['length'], self.y):
+            if parking[red_car['row']][col] == 1:
+                h_val += 1
+        self.h_value = h_val
+
+    def set_g_value(self, g_value):
+        self.g_value = g_value
+        self.f_value = self.g_value + self.h_value
 
     def move_car_with_id(self, index, dist):
         new_cars = list(self.cars)

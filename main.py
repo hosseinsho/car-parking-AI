@@ -1,6 +1,4 @@
-from pprint import pprint
-
-from algorithms import a_star_graph
+from algorithms import a_star_algorithm
 from parking_state import ParkingState
 
 
@@ -22,7 +20,7 @@ def main():
             })
 
         start_state = ParkingState(x, y, cars)
-        cost = a_star_graph(start_state)
+        cost = a_star_algorithm(start_state)
 
         print("Test #", parking + 1, ": ", cost + 1, sep='')
 
