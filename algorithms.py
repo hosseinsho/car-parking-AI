@@ -18,8 +18,8 @@ def a_star_algorithm(start_state: ParkingState):
         if state.h_value == 0:
             return state.g_value
 
-        closed_states.add(state)
         children = state.find_child_states()
+        closed_states.add(state)
 
         for child_state in children:
             if child_state in closed_states:

@@ -87,11 +87,11 @@ class ParkingState:
         return children
 
     def _init_hash(self):
-        h = 0
-        for el in self.cars:
-            h = (h * 701 + hash((el['row'], el['col'])))
-        self._hash = h & 0xFFFFFFFF
-
+        hashed_object = 0
+        for car in self.cars:
+            hashed_object += hash((car['col'], car['row'], car['pos'], car['length']))
+        self._hash = hashed_object 
+        
     def __hash__(self):
         return self._hash
 
